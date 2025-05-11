@@ -1,16 +1,20 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { LoginPage } from './features/auth/pages/LoginPage';
+import { PrivateRoute } from './middlewares/privateRoutes';
 
 function App() {
-  const [count, setCount] = useState(0)
-
   return (
-    <>
-     
-    </>
-  )
+    <Router>
+      <Routes>
+        <Route path="/login" element={<LoginPage />} />
+        <Route path="/register" element={<LoginPage />} />
+        <Route path="/" element={<PrivateRoute />} />
+        
+        {/* <Route path="/surveys" element={<SurveysPage />} /> */}
+        {/* Otras rutas */}
+      </Routes>
+    </Router>
+  );
 }
 
-export default App
+export default App;
