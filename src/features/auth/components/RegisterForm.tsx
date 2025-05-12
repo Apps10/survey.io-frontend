@@ -4,11 +4,21 @@ import { userService } from '../services/user.service';
 import { useAuth } from '../hooks/auth.hook';
 import { setupInterceptors } from '@/api/axios.service';
 import { useNavigate } from 'react-router-dom';
+import { generateId } from '@/lib/utils';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
+import type { IAuthUser, UserRole } from '../interfaces/user.interface';
 
-export const LoginForm = () => {
-  const navigate = useNavigate()
-  const { setAuthUserAction } = useAuth()
+export const RegisterForm = () => {
+  const navigate = useNavigate();
+  const { setAuthUserAction } = useAuth();
   const [email, setEmail] = useState('');
+  const [role, setRole] = useState<UserRole>('user');
   const [password, setPassword] = useState('');
   const [error, setError] = useState<string | null>(null);
 
@@ -16,18 +26,24 @@ export const LoginForm = () => {
     e.preventDefault();
     setError(null);
     try {
-      const data = await userService().login({email, password});
-      setupInterceptors(navigate)
+      const data = await userService().register({
+        email,
+        password,
+        id: generateId(),
+        role,
+      });
+      
+      setupInterceptors(navigate);
       setAuthUserAction({
         email: data.user.email,
         id: data.user.id,
         role: data.user.role,
-        token: data.token
-      })
+        token: data.token,
+      });
 
       navigate('/surveys');
     } catch (err: any) {
-      console.log(err)
+      console.log(err);
       setError('Invalid credentials');
     }
   };
@@ -58,11 +74,27 @@ export const LoginForm = () => {
         />
       </div>
       <div>
-        <Label onClick={()=>navigate('/auth/register')}>Aun No tienes cuenta?</Label>
+        <Label htmlFor="role">Rol</Label>
+        <Select>
+          <SelectTrigger className="w-[180px]">
+            <SelectValue placeholder="User" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem onClick={() => setRole('user')} value="user">
+              User
+            </SelectItem>
+            <SelectItem onClick={() => setRole('admin')} value="admin">
+              Admin
+            </SelectItem>
+          </SelectContent>
+        </Select>
       </div>
-      <Button type="submit">
-        Login
-      </Button>
+      <div>
+        <Label onClick={() => navigate('/auth/login')}>
+          Ya tienes una cuenta?
+        </Label>
+      </div>
+      <Button type="submit">registrar</Button>
     </form>
   );
 };
