@@ -12,7 +12,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import type { IAuthUser, UserRole } from '../interfaces/user.interface';
+import type { UserRole } from '../interfaces/user.interface';
 
 export const RegisterForm = () => {
   const navigate = useNavigate();
@@ -32,7 +32,7 @@ export const RegisterForm = () => {
         id: generateId(),
         role,
       });
-      
+
       setupInterceptors(navigate);
       setAuthUserAction({
         email: data.user.email,
